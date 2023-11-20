@@ -155,7 +155,23 @@
     </div>
     <!--Layering Panel-->
     <div class="col-2 right-panel">
-        Layering
+        <div class="row">
+            <div class="col-6 py-2">
+                Layers:<br />
+                <div class="btn-group-vertical">
+                    <span class="btn btn-secondary disabled"><i class="fas fa-layer-group"></i></span>
+                    <button class="btn btn-dark layer-button selected" id="layer-1">1</button>
+                    <button class="btn btn-secondary" id="add-layer"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="col-6 py-2">
+                Special Layers:<br />
+                <div class="btn-group-vertical">
+                    <span class="btn btn-secondary disabled"><i class="fas fa-layer-group"></i></span>
+                    <button class="btn btn-secondary" onclick="alert('Specialty Layers Coming Soon!')"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -175,6 +191,14 @@
             }
             $(this).addClass('selected');
         });
+        $(document).on('click', '.layer-button', function () {
+            let layerButtons = document.getElementsByClassName('layer-button');
+            for (let i = 0; i < layerButtons.length; i++) {
+                layerButtons[i].classList.remove('selected');
+            }
+            $(this).addClass('selected');
+        });
+
     </script>
 
     <script>
@@ -194,6 +218,19 @@
         });
         $('#font-size-select').on('change', function () {
             $(this).css('font-size', $(this).val());
+        });
+    </script>
+
+    <script>
+        $(document).on('click', '#add-layer', function () {
+            let layerSelects = document.getElementsByClassName('layer-button');
+            if (layerSelects.length >= 10) {
+                alert('Layer Limit Reached!');
+                return;
+            }
+            let nextIndex = layerSelects.length + 1;
+            let newButton = '<button class="btn btn-dark layer-button" id="layer-' + nextIndex + '">' + nextIndex + '</button>';
+            $('.layer-button').last().after(newButton);
         });
     </script>
 }
