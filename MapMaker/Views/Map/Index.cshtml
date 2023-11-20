@@ -17,6 +17,7 @@
         border-bottom: solid 1px #808080;
         border-right: solid 1px #808080;
         height:89%;
+        padding-right:0;
     }
 
     .right-panel {
@@ -55,6 +56,17 @@
     .btn-dark.selected{
         background-color:#6a6eee;
     }
+
+    .left-panel-header{
+        border-top:solid 1px #808080;
+        border-bottom:solid 1px #808080;
+    }
+
+    .fa-chevron-up, .fa-chevron-down{
+        height:100%;
+        margin-top:auto;
+        margin-bottom:auto;
+    }
 </style>
 
 <div class="row" style="margin-top:-15px;height:99%;">
@@ -72,7 +84,8 @@
                 <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Multiselect"><i class="fas fa-grip"></i></button>
                 <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lasso"><i class="fas fa-circle"></i></button>
             </div>
-            <div class="col-5 d-flex">
+            <div class="col-4"></div>
+            <div class="col-1 d-flex">
                 <div class="btn-group float-end">
                     <button class="btn btn-dark selected mode-button">Edit</button>
                     <button class="btn btn-dark mode-button">View</button>
@@ -82,7 +95,59 @@
     </div>
     <!--Draw Panel-->
     <div class="col-3 left-panel ps-3">
-        Drawing
+        <div class="left-panel-header ps-2" data-bs-toggle="collapse" data-bs-target="#drawing-tools" aria-expanded="false" aria-controls="drawing-tools">
+            Draw
+            <i class="float-end fas fa-chevron-down" style="width:40px;"></i>
+        </div>
+        <div class="collapse tools-collapsible ps-2" id="drawing-tools">
+            <div class="row">
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Draw">
+                    <i class="fas fa-paintbrush"></i>
+                </button>
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Line">
+                    <i class="fas fa-chart-line"></i>
+                </button>
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Fill">
+                    <i class="fas fa-fill-drip"></i>
+                </button>
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Erase">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </div>
+        </div>
+        <div class="left-panel-header ps-2" data-bs-toggle="collapse" data-bs-target="#text-tools" aria-expanded="false" aria-controls="drawing-tools">
+            Text
+            <i class="float-end fas fa-chevron-down" style="width:40px;"></i>
+        </div>
+        <div class="collapse tools-collapsible ps-2" id="text-tools">
+            <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Text">
+                <i class="fas fa-font"></i>
+            </button>
+            <div class="input-group my-2 pe-2">
+                <span class="input-group-text">Font</span>
+                <select class="form-select" id="font-select" style="font-family:'Times New Roman', Times, serif">
+                    <option value="'Times New Roman', Times, serif" style="font-family:'Times New Roman', Times, serif">Times New Roman</option>
+                    <option value="Arial" style="font-family:Arial">Arial</option>
+                    <option value="'Comic Sans MS'" style="font-family:'Comic Sans MS'">Comic Sans</option>
+                </select>
+            </div>
+            <div class="input-group pe-2 my-2">
+                <span class="input-group-text">Size</span>
+                <select class="form-select" id="font-size-select" style="font-size:12pt;">
+                    <option value="12pt" style="font-size:12pt;">12</option>
+                    <option value="14pt" style="font-size:14pt;">14</option>
+                    <option value="16pt" style="font-size:16pt;">16</option>
+                    <option value="72pt" style="font-size:72pt;">72</option>
+                </select>
+            </div>
+        </div>
+        <div class="left-panel-header ps-2" data-bs-toggle="collapse" data-bs-target="#terrain-tools" aria-expanded="false" aria-controls="drawing-tools">
+            Terrain
+            <i class="float-end fas fa-chevron-down" style="width:40px;"></i>
+        </div>
+        <div class="collapse tools-collapsible ps-2" id="terrain-tools">
+            Terraining Tools Coming Soon
+        </div>
     </div>
     <!--Canvas-->
     <div class="col-7 canvas-panel">
@@ -93,3 +158,42 @@
         Layering
     </div>
 </div>
+
+@section scripts{
+    <script>
+        $('.select-button').on('click', function () {
+            let selectButtons = document.getElementsByClassName('select-button');
+            for (let i = 0; i < selectButtons.length; i++) {
+                selectButtons[i].classList.remove('selected');
+            }
+            $(this).addClass('selected');
+        });
+        $('.mode-button').on('click', function () {
+            let modeButtons = document.getElementsByClassName('mode-button');
+            for (let i = 0; i < modeButtons.length; i++) {
+                modeButtons[i].classList.remove('selected');
+            }
+            $(this).addClass('selected');
+        });
+    </script>
+
+    <script>
+        // $(document).on('click', '.fa-chevron-down', function () {
+        //     this.classList.remove('fa-chevron-down');
+        //     this.classList.add('fa-chevron-up');
+        // })
+        // $(document).on('click', '.fa-chevron-up', function () {
+        //     this.classList.remove('fa-chevron-up');
+        //     this.classList.add('fa-chevron-down');
+        // })
+    </script>
+
+    <script>
+        $('#font-select').on('change', function () {
+            $(this).css('font-family', $(this).val());
+        });
+        $('#font-size-select').on('change', function () {
+            $(this).css('font-size', $(this).val());
+        });
+    </script>
+}
