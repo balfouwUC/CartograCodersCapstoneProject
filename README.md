@@ -3,18 +3,6 @@
 
 ---
 
-## Table of Contents:
-1. [Team Details and Abstract](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#1-team-details-and-abstract)
-2. [Project Description](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#2-project-description)
-3. [User Stories and Design Diagrams](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#3-user-stories-and-design-diagrams)
-4. [Project Tasks and Timeline](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#4-project-tasks-and-timeline)
-5. [ABET Concerns Essay](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#5-abet-concerns-essay)
-6. [PPT Slideshow](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#6-ppt-slideshow)
-7. [Self-Assessment Essays](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#7-self-assessment-essays)
-8. [Professional Biographies](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#8-professional-biographies)
-9. [Budget](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#9-budget)
-10. [Appendix](https://github.com/balfouwUC/CartograCodersCapstoneProject/wiki/_new#10-appendix)
-
 ### Team Details and Abstract
   - William Balfour
   - Elijah Hoorman
