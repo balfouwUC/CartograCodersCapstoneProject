@@ -3,7 +3,7 @@
 
 ---
 
-### 1. Team Details and Abstract
+### Team Details and Abstract
   - William Balfour
   - Elijah Hoorman
   - Natania Wittman
