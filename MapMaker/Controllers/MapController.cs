@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MapMaker.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MapMaker.Controllers
 {
@@ -6,7 +7,9 @@ namespace MapMaker.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            MapIndexViewModel mapIdxVM = new MapIndexViewModel();
+
+            return View(mapIdxVM);
         }
     }
 }
