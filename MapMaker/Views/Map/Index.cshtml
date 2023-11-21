@@ -3,6 +3,48 @@
 @{
     ViewData["Title"] = "Create/Edit Map";
 }
+<head>
+    <script type="text/javascript" src="~/lib/paper/dist/paper-full.js"></script>
+    <script type="text/javascript">
+        paper.install(window);
+        window.onload = function () {
+            var canvas = document.getElementById('mainCanvas');
+
+            paper.setup(canvas);
+
+            var toolBrush = new Tool();
+            toolBrush.fixedDistance = 10;
+
+            let myPath;
+
+            toolBrush.onMouseDown = function (event) {
+                myPath = new Path();
+                myPath.fillColor = 'black';
+                myPath.strokeColor = 'black';
+                myPath.add(event.point);
+            }
+
+            toolBrush.onMouseDrag = function (event) {
+                let step = event.delta;
+                step.angle += 90;
+
+                let top = event.middlePoint.add(step);
+                let bottom = event.middlePoint.subtract(step);
+
+                let line = new Path();
+                line.strokeColor = 'black';
+                line.add(top);
+                line.add(bottom);
+
+                myPath.add(top);
+                myPath.insert(0, bottom);
+                myPath.smooth()
+            }
+        }
+
+    </script>
+</head>
+
 
 <style>
     .top-panel{
@@ -29,6 +71,7 @@
 
     .canvas-panel{
         border-bottom:solid 1px #808080;
+        height:89%;
     }
 
     .file-button{
@@ -150,8 +193,10 @@
         </div>
     </div>
     <!--Canvas-->
-    <div class="col-7 canvas-panel">
-        Canvas
+    <div class="col-7 canvas-panel overflow-auto">
+        <canvas id="mainCanvas" width="900" height="530" style="background-color:white;">
+
+        </canvas>
     </div>
     <!--Layering Panel-->
     <div class="col-2 right-panel">
