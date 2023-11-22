@@ -207,6 +207,39 @@
         margin-top:auto;
         margin-bottom:auto;
     }
+
+    .slider-value{
+        width:10%;
+    }
+
+    .size-slider{
+        width:90%;
+        height:25px;
+        background:#d3d3d3;
+        outline:none;
+        opacity:0.7;
+        transition:opacity .2s;
+    }
+
+        .size-slider:hover{
+            opacity:1;
+        }
+
+        .size-slider::-webkit-slider-thumb{
+                width: 25px;
+                height: 25px;
+                border-radius:10px;
+                background: #000000;
+                cursor: pointer;
+        }
+
+        .size-slider:-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 10px;
+            background: #000000;
+            cursor: pointer;
+        }
 </style>
 
 <div class="row" style="margin-top:-15px;height:99%;">
@@ -256,20 +289,29 @@
                 </button>
                 <br />
                 <div class="d-none" id="brush-tools">
-                    <label class="form-label">Brush Size</label>
-                    <input class="form-control form-control-sm" id="brush-size" type="number" min="1" max="30" step="1" value="10" />
+                    <label class="form-label">Brush Size</label><br />
+                    <div class="d-inline-flex w-100">
+                        <span class="slider-value" id="brush-size-value">10</span>
+                        <input class="size-slider" id="brush-size" type="range" min="1" max="30" step="1" value="10" />
+                    </div>
                     <label class="form-label">Brush Color</label>
                     <input type="color" id="brush-color" />
                 </div>
                 <div class="d-none" id="line-tools">
                     <label class="form-label">Line Size</label>
-                    <input class="form-control form-control-sm" id="line-size" type="number" min="1" max="30" step="1" value="10" />
+                    <div class="d-inline-flex w-100">
+                        <span class="slider-value" id="line-size-value">10</span>
+                        <input class="size-slider" id="line-size" type="range" min="1" max="30" step="1" value="10" />
+                    </div>
                     <label class="form-label">Line Color</label>
                     <input type="color" id="line-color" />
                 </div>
                 <div class="d-none" id="eraser-tools">
                     <label class="form-label">Eraser Size</label>
-                    <input class="form-control form-control-sm" id="eraser-size" type="number" min="1" max="30" step="1" value="10" />
+                    <div class="d-inline-flex w-100">
+                        <span class="slider-value" id="eraser-size-value">10</span>
+                        <input class="size-slider" id="eraser-size" type="range" min="1" max="50" step="1" value="10" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -417,25 +459,28 @@
     </script>
 
     <script>
-        $('#brush-size').on('change', function () {
+        $('#brush-size').on('input', function () {
             brushSize = $(this).val() / 2;
+            $('#brush-size-value').html($(this).val());
         });
-        $('#brush-color').on('change', function () {
+        $('#brush-color').on('input', function () {
             brushColor = $(this).val();
         })
-        $('#eraser-size').on('change', function () {
+        $('#eraser-size').on('input', function () {
             eraserSize = $(this).val() / 2;
+            $('#eraser-size-value').html($(this).val());
         });
-        $('#line-size').on('change', function () {
+        $('#line-size').on('input', function () {
             lineSize = $(this).val();
+            $('#line-size-value').html($(this).val());
         });
-        $('#line-color').on('change', function () {
+        $('#line-color').on('input', function () {
             lineColor = $(this).val();
         })
-        $('#font-select').on('change', function () {
+        $('#font-select').on('input', function () {
             textFont = $(this).val();
         })
-        $('#font-size-select').on('change', function () {
+        $('#font-size-select').on('input', function () {
             textSize = $(this).val();
         })
     </script>
