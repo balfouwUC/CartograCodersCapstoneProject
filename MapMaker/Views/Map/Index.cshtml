@@ -6,15 +6,18 @@
 <head>
     <script type="text/javascript" src="~/lib/paper/dist/paper-full.js"></script>
     <script type="text/javascript">
-        var brushSize = 10;
+        var brushSize = 5;
         var brushColor = 'black';
         var lineColor = 'black';
-        var eraserSize = 10; 
+        var eraserSize = 5; 
         var backgroundColor = 'white';
         var lineSize = 10;
         var lineColor = 'black';
-        var toolSelect, toolBrush, toolEraser, toolLine;
+        var textFont = "'Times New Roman', Times, serif";
+        var textSize = 12;
+        var toolSelect, toolBrush, toolEraser, toolLine, toolText;
         var writingText = false;
+        var shifted = false;
 
         paper.install(window);
         window.onload = function () {
@@ -31,6 +34,7 @@
 
             let myPath;
             let text;
+            let textBox;
 
             toolBrush.onMouseDown = function (event) {
                 toolBrush.fixedDistance = brushSize;
@@ -94,20 +98,44 @@
             toolText.onMouseDown = function (event) {
                 if (writingText) {
                     writingText = false;
+                    textBox.remove();
                 }
                 else {
                     writingText = true;
                     text = new PointText(event.point);
                     text.justification = 'center';
                     text.fillColor = 'black';
-                    text.content = 'This is some text.'
+                    text.content = '';
+                    text.fontFamily = textFont;
+                    text.fontSize = textSize;
+                    let textRect = new Rectangle(event.point.x - 40, event.point.y - 20, 80, 40);
+                    textBox = new Path.Rectangle(textRect);
+                    textBox.strokeColor = 'black';
+                    textBox.selected = true;
                 }
             }
 
             toolText.onKeyDown = function (event) {
-                if (writingText) {
-                    text.content = text.content + event.key.replace('space', ' ');
+                if (event.key == 'shift')
+                    shifted = true;
+
+                else if (writingText) {
+                    if (event.key == 'enter')
+                        writingText = false;
+                    else if(event.key == 'backspace')
+                        text.content = text.content.slice(0, -1);
+                    else {
+                        if(shifted)
+                            text.content = text.content + event.key.replace('space', ' ').toUpperCase();
+                        else
+                            text.content = text.content + event.key.replace('space', ' ');
+                    }
                 }
+            }
+
+            toolText.onKeyUp = function(event){
+                if (event.key == 'shift')
+                    shifted = false;
             }
         }
 
@@ -390,19 +418,25 @@
 
     <script>
         $('#brush-size').on('change', function () {
-            brushSize = $(this).val();
+            brushSize = $(this).val() / 2;
         });
         $('#brush-color').on('change', function () {
             brushColor = $(this).val();
         })
         $('#eraser-size').on('change', function () {
-            eraserSize = $(this).val();
+            eraserSize = $(this).val() / 2;
         });
         $('#line-size').on('change', function () {
             lineSize = $(this).val();
         });
         $('#line-color').on('change', function () {
             lineColor = $(this).val();
+        })
+        $('#font-select').on('change', function () {
+            textFont = $(this).val();
+        })
+        $('#font-size-select').on('change', function () {
+            textSize = $(this).val();
         })
     </script>
 }
