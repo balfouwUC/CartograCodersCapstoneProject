@@ -1,0 +1,29 @@
+﻿@model IEnumerable<MapMaker.Models.Test>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Test</h2>
+
+<table class="table">
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayTextFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayTextFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayTextFor(modelItem => item.LastName)
+            </td>
+        </tr>
+    }
+</table>
