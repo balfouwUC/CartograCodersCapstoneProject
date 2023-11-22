@@ -11,7 +11,10 @@
         var lineColor = 'black';
         var eraserSize = 10; 
         var backgroundColor = 'white';
+        var lineSize = 10;
+        var lineColor = 'black';
         var toolSelect, toolBrush, toolEraser, toolLine;
+        var writingText = false;
 
         paper.install(window);
         window.onload = function () {
@@ -24,8 +27,10 @@
             toolEraser = new Tool();
             toolEraser.fixedDistance = eraserSize;
             toolLine = new Tool();
+            toolText = new Tool();
 
             let myPath;
+            let text;
 
             toolBrush.onMouseDown = function (event) {
                 toolBrush.fixedDistance = brushSize;
@@ -78,6 +83,7 @@
             toolLine.onMouseDown = function (event) {
                 myPath = new Path();
                 myPath.strokeColor = lineColor;
+                myPath.strokeWidth = lineSize;
                 myPath.add(event.point, event.point);
             }
 
@@ -85,6 +91,24 @@
                 myPath.lastSegment.point = event.point;
             }
 
+            toolText.onMouseDown = function (event) {
+                if (writingText) {
+                    writingText = false;
+                }
+                else {
+                    writingText = true;
+                    text = new PointText(event.point);
+                    text.justification = 'center';
+                    text.fillColor = 'black';
+                    text.content = 'This is some text.'
+                }
+            }
+
+            toolText.onKeyDown = function (event) {
+                if (writingText) {
+                    text.content = text.content + event.key.replace('space', ' ');
+                }
+            }
         }
 
     </script>
@@ -195,7 +219,8 @@
                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Line" id="Line" onclick="toolLine.activate();">
                     <i class="fas fa-chart-line"></i>
                 </button>
-                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Fill">
+                <!--Paint bucket is difficult, because it typically uses flood fill rather than vector graphics-->
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Fill- Coming Soon" disabled>
                     <i class="fas fa-fill-drip"></i>
                 </button>
                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Erase" id="Erase" onclick="toolEraser.activate();">
@@ -208,6 +233,12 @@
                     <label class="form-label">Brush Color</label>
                     <input type="color" id="brush-color" />
                 </div>
+                <div class="d-none" id="line-tools">
+                    <label class="form-label">Line Size</label>
+                    <input class="form-control form-control-sm" id="line-size" type="number" min="1" max="30" step="1" value="10" />
+                    <label class="form-label">Line Color</label>
+                    <input type="color" id="line-color" />
+                </div>
                 <div class="d-none" id="eraser-tools">
                     <label class="form-label">Eraser Size</label>
                     <input class="form-control form-control-sm" id="eraser-size" type="number" min="1" max="30" step="1" value="10" />
@@ -219,7 +250,7 @@
             <i class="float-end fas fa-chevron-down" style="width:40px;"></i>
         </div>
         <div class="collapse tools-collapsible ps-2" id="text-tools">
-            <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Text">
+            <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Text" onclick="toolText.activate();">
                 <i class="fas fa-font"></i>
             </button>
             <div class="input-group my-2 pe-2">
@@ -285,17 +316,26 @@
             }
             $(this).addClass('selected');
 
+            //TODO: Refactor this code
             if(document.getElementById('Draw').classList.contains('selected')){
                 document.getElementById('brush-tools').classList.remove('d-none');
                 document.getElementById('eraser-tools').classList.add('d-none');
+                document.getElementById('line-tools').classList.add('d-none');
             }
             else if (document.getElementById('Erase').classList.contains('selected')) {
                 document.getElementById('brush-tools').classList.add('d-none');
                 document.getElementById('eraser-tools').classList.remove('d-none');
+                document.getElementById('line-tools').classList.add('d-none');
+            }
+            else if (document.getElementById('Line').classList.contains('selected')) {
+                document.getElementById('brush-tools').classList.add('d-none');
+                document.getElementById('eraser-tools').classList.add('d-none');
+                document.getElementById('line-tools').classList.remove('d-none');
             }
             else{
                 document.getElementById('brush-tools').classList.add('d-none');
-                document.getElementById('eraser-tools').classList.add('d-none');
+                document.getElementById('eraser-tools').classList.add('d-none'); 
+                document.getElementById('line-tools').classList.add('d-none');
             }
         });
         $('.mode-button').on('click', function () {
@@ -358,5 +398,11 @@
         $('#eraser-size').on('change', function () {
             eraserSize = $(this).val();
         });
+        $('#line-size').on('change', function () {
+            lineSize = $(this).val();
+        });
+        $('#line-color').on('change', function () {
+            lineColor = $(this).val();
+        })
     </script>
 }
