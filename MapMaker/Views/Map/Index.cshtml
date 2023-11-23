@@ -35,6 +35,7 @@
             toolText = new Tool();
 
             let myPath;
+            let pathEnd = new Shape.Circle(new Point(-5, -5), brushSize);
             let text;
             let textBox;
             let cursorCircle = new Shape.Circle(new Point(-5, -5), brushSize);
@@ -50,7 +51,6 @@
                 myPath.strokeColor = brushColor;
                 myPath.add(event.point);
             }
-
             toolBrush.onMouseDrag = function (event) {
                 let step = event.delta;
                 step.angle += 90;
@@ -65,15 +65,13 @@
 
                 myPath.add(top);
                 myPath.insert(0, bottom);
+                myPath.smooth();
+
+                pathEnd.remove();
+                pathEnd = new Shape.Circle(event.point, brushSize);
+                pathEnd.fillColor = brushColor;
+                pathEnd.strokeColor = brushColor;
             }
-
-            // toolBrush.onMouseUp = function (event) {
-            //     let pathEnd = new Shape.Circle(event.upPoint, brushSize);
-            //     pathStart.fillColor = brushColor;
-            //     pathStart.strokeColor = brushColor;
-            //     myPath.closed = true;
-            // }
-
             toolBrush.onMouseMove = function(event){
                 cursorCircle.remove();
                 cursorCircle = new Shape.Circle(event.point, brushSize)
