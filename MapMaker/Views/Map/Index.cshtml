@@ -25,6 +25,8 @@
 
             paper.setup(canvas);
 
+            toolSelect = new Tool();
+            toolSelect.activate();
             toolBrush = new Tool();
             toolBrush.fixedDistance = brushSize;
             toolEraser = new Tool();
@@ -35,9 +37,14 @@
             let myPath;
             let text;
             let textBox;
+            let cursorCircle = new Shape.Circle(new Point(-5, -5), brushSize);
 
             toolBrush.onMouseDown = function (event) {
+                cursorCircle.remove();
                 toolBrush.fixedDistance = brushSize;
+                let pathStart = new Shape.Circle(event.downPoint, brushSize)
+                pathStart.fillColor = brushColor;
+                pathStart.strokeColor = brushColor;
                 myPath = new Path();
                 myPath.fillColor = brushColor;
                 myPath.strokeColor = brushColor;
@@ -60,6 +67,20 @@
                 myPath.insert(0, bottom);
             }
 
+            // toolBrush.onMouseUp = function (event) {
+            //     let pathEnd = new Shape.Circle(event.upPoint, brushSize);
+            //     pathStart.fillColor = brushColor;
+            //     pathStart.strokeColor = brushColor;
+            //     myPath.closed = true;
+            // }
+
+            toolBrush.onMouseMove = function(event){
+                cursorCircle.remove();
+                cursorCircle = new Shape.Circle(event.point, brushSize)
+                cursorCircle.strokeColor = '#808080';
+                cursorCircle.strokeWidth = 1;
+            }
+
             toolEraser.onMouseDown = function (event) {
                 toolEraser.fixedDistance = eraserSize;
                 myPath = new Path();
@@ -69,6 +90,11 @@
             }
 
             toolEraser.onMouseDrag = function (event) {
+                cursorCircle.remove();
+                cursorCircle = new Shape.Circle(event.point, eraserSize);
+                cursorCircle.strokeColor = 'gray';
+                cursorCircle.strokeWidth = 1;
+
                 let step = event.delta;
                 step.angle += 90;
 
@@ -82,6 +108,13 @@
 
                 myPath.add(top);
                 myPath.insert(0, bottom);
+                myPath.smooth();
+            }
+            toolEraser.onMouseMove = function (event) {
+                cursorCircle.remove();
+                cursorCircle = new Shape.Circle(event.point, eraserSize);
+                cursorCircle.strokeColor = 'gray';
+                cursorCircle.strokeWidth = 1;
             }
 
             toolLine.onMouseDown = function (event) {
