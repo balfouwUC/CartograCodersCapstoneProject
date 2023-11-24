@@ -7,12 +7,12 @@
     <script type="text/javascript" src="~/lib/paper/dist/paper-full.js"></script>
     <script type="text/javascript">
         var brushSize = 5;
-        var brushColor = 'black';
-        var lineColor = 'black';
+        var brushColor = '@(Model.ColorPalette.LandColor)';
+        var lineColor = '@(Model.ColorPalette.LandColor)';
         var eraserSize = 5; 
-        var backgroundColor = 'white';
+        var backgroundColor = '@(Model.ColorPalette.CanvasColor)';
         var lineSize = 10;
-        var lineColor = 'black';
+        var lineColor = '@(Model.ColorPalette.LandColor)';
         var textFont = "'Times New Roman', Times, serif";
         var textSize = 12;
         var toolSelect, toolBrush, toolEraser, toolLine, toolText;
@@ -135,7 +135,7 @@
                     writingText = true;
                     text = new PointText(event.point);
                     text.justification = 'center';
-                    text.fillColor = 'black';
+                    text.fillColor = '@(Model.ColorPalette.TextColor)';
                     text.content = '';
                     text.fontFamily = textFont;
                     text.fontSize = textSize;
@@ -326,7 +326,7 @@
                         <input class="size-slider" id="brush-size" type="range" min="1" max="30" step="1" value="10" />
                     </div>
                     <label class="form-label">Brush Color</label>
-                    <input type="color" id="brush-color" />
+                    <input type="color" id="brush-color" value="@Model.ColorPalette.LandColor"/>
                 </div>
                 <div class="d-none" id="line-tools">
                     <label class="form-label">Line Size</label>
@@ -335,7 +335,7 @@
                         <input class="size-slider" id="line-size" type="range" min="1" max="30" step="1" value="10" />
                     </div>
                     <label class="form-label">Line Color</label>
-                    <input type="color" id="line-color" />
+                    <input type="color" id="line-color" value="@Model.ColorPalette.LandColor" />
                 </div>
                 <div class="d-none" id="eraser-tools">
                     <label class="form-label">Eraser Size</label>
@@ -382,7 +382,7 @@
     </div>
     <!--Canvas-->
     <div class="col-7 canvas-panel overflow-auto">
-        <canvas id="mainCanvas" width="900" height="530" style="background-color:white;">
+        <canvas id="mainCanvas" width="900" height="530" style="background-color:@(Model.ColorPalette.CanvasColor);">
 
         </canvas>
     </div>
