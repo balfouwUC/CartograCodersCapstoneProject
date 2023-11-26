@@ -15,7 +15,7 @@
         var lineColor = '@(Model.ColorPalette.LandColor)';
         var textFont = "'Times New Roman', Times, serif";
         var textSize = 12;
-        var toolSelect, toolBrush, toolEraser, toolLine, toolText;
+        var toolSelect, toolPan, toolBrush, toolEraser, toolLine, toolText;
         var writingText = false;
         var shifted = false;
 
@@ -27,6 +27,7 @@
 
             toolSelect = new Tool();
             toolSelect.activate();
+            toolPan = new Tool();
             toolBrush = new Tool();
             toolBrush.fixedDistance = brushSize;
             toolEraser = new Tool();
@@ -39,6 +40,25 @@
             let text;
             let textBox;
             let cursorCircle = new Shape.Circle(new Point(-5, -5), brushSize);
+
+	        toolPan.onMouseDrag = function(event) {
+		        let pan_offset = event.point.subtract(event.downPoint);
+                let newCenter = paper.view.center.subtract(pan_offset);
+                if(newCenter.x + (paper.view.size._width / 2) > canvas.width){
+                    newCenter.x = canvas.width - (paper.view.size._width / 2);
+                }
+                else if(newCenter.x - (paper.view.size._width / 2) < 0){
+                    newCenter.x = paper.view.size._width / 2; 
+                }
+                if(newCenter.y + (paper.view.size._height / 2) > canvas.height){
+                    newCenter.y = canvas.height - (paper.view.size._height / 2);
+                }
+                else if(newCenter.y - (paper.view.size._height / 2) < 0){
+                    newCenter.y = paper.view.size._height / 2;
+                }
+
+		        paper.view.center = newCenter;
+	        }
 
             toolBrush.onMouseDown = function (event) {
                 cursorCircle.remove();
@@ -167,7 +187,7 @@
             toolText.onKeyUp = function(event){
                 if (event.key == 'shift')
                     shifted = false;
-            }
+                }
         }
 
     </script>
@@ -287,6 +307,7 @@
                 <button class="btn btn-dark selected select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Select" onclick="toolSelect.activate();"><i class="fas fa-arrow-pointer"></i></button>
                 <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Multiselect"><i class="fas fa-grip"></i></button>
                 <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lasso"><i class="fas fa-circle"></i></button>
+                <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pan" onclick="toolPan.activate();"><i class="fas fa-arrows-alt"></i></button>
             </div>
             <div class="col-4"></div>
             <div class="col-1 d-flex">
@@ -409,6 +430,7 @@
 </div>
 
 @section scripts{
+    <!--Tool selection-->
     <script>
         $('.select-button').on('click', function () {
             let selectButtons = document.getElementsByClassName('select-button');
@@ -466,7 +488,7 @@
         //     this.classList.add('fa-chevron-down');
         // })
     </script>
-
+    <!--Change font on ui-->
     <script>
         $('#font-select').on('change', function () {
             $(this).css('font-family', $(this).val());
@@ -475,7 +497,7 @@
             $(this).css('font-size', $(this).val());
         });
     </script>
-
+    <!--Add New Layer-->
     <script>
         $(document).on('click', '#add-layer', function () {
             let layerSelects = document.getElementsByClassName('layer-button');
@@ -488,7 +510,7 @@
             $('.layer-button').last().after(newButton);
         });
     </script>
-
+    <!--Change drawing tool size and color-->
     <script>
         $('#brush-size').on('input', function () {
             brushSize = $(this).val() / 2;
@@ -514,5 +536,61 @@
         $('#font-size-select').on('input', function () {
             textSize = $(this).val();
         })
+    </script>
+
+    <!--Script for Zoom & Pan-->
+    <script>
+        //Zoom
+        $(document).ready(function(){
+	        $('#mainCanvas').on('mousewheel', function(event) {
+                var canvas = this;
+		        var newZoom = paper.view.zoom; 
+		        var oldZoom = paper.view.zoom;
+                var minZoom = 1;
+		
+		        if (event.originalEvent.deltaY < 0) {			
+			        newZoom = paper.view.zoom * 1.05;
+		        } else{
+			        newZoom = paper.view.zoom * 0.95;
+		        }
+
+                if(newZoom < 1)
+                    newZoom = 1;
+                
+		
+		        var beta = oldZoom / newZoom;
+		
+		        var mousePosition = new paper.Point(event.offsetX, event.offsetY);
+		
+		        //viewToProject: gives the coordinates in the Project space from the Screen Coordinates
+		        var viewPosition = paper.view.viewToProject(mousePosition);
+		
+		        var mpos = viewPosition;
+		        var ctr = paper.view.center;
+		
+		        var pc = mpos.subtract(ctr);
+		        var offset = mpos.subtract(pc.multiply(beta)).subtract(ctr);	
+		
+		        paper.view.zoom = newZoom;
+		        paper.view.center = paper.view.center.add(offset);
+
+                if(paper.view.center.x + (paper.view.size._width / 2) > canvas.width){
+                    paper.view.center.x = canvas.width - (paper.view.size._width / 2);
+                }
+                else if(paper.view.center.x - (paper.view.size._width / 2) < 0){
+                    paper.view.center.x = paper.view.size._width / 2; 
+                }
+                if(paper.view.center.y + (paper.view.size._height / 2) > canvas.height){
+                    paper.view.center.y = canvas.height - (paper.view.size._height / 2);
+                }
+                else if(paper.view.center.y - (paper.view.size._height / 2) < 0){
+                    paper.view.center.y = paper.view.size._height / 2;
+                }
+		
+		        event.preventDefault();
+		        paper.view.draw();			
+	        });	
+        });	
+
     </script>
 }
