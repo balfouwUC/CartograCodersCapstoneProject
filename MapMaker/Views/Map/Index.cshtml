@@ -6,12 +6,18 @@
 <head>
     <script type="text/javascript" src="~/lib/paper/dist/paper-full.js"></script>
     <script type="text/javascript">
-        var brushSize = 10;
-        var brushColor = 'black';
-        var lineColor = 'black';
-        var eraserSize = 10; 
-        var backgroundColor = 'white';
-        var toolSelect, toolBrush, toolEraser, toolLine;
+        var brushSize = 5;
+        var brushColor = '@(Model.ColorPalette.LandColor)';
+        var lineColor = '@(Model.ColorPalette.LandColor)';
+        var eraserSize = 5; 
+        var backgroundColor = '@(Model.ColorPalette.CanvasColor)';
+        var lineSize = 10;
+        var lineColor = '@(Model.ColorPalette.LandColor)';
+        var textFont = "'Times New Roman', Times, serif";
+        var textSize = 12;
+        var toolSelect, toolPan, toolBrush, toolEraser, toolLine, toolText;
+        var writingText = false;
+        var shifted = false;
 
         paper.install(window);
         window.onload = function () {
@@ -19,22 +25,52 @@
 
             paper.setup(canvas);
 
+            toolSelect = new Tool();
+            toolSelect.activate();
+            toolPan = new Tool();
             toolBrush = new Tool();
             toolBrush.fixedDistance = brushSize;
             toolEraser = new Tool();
             toolEraser.fixedDistance = eraserSize;
             toolLine = new Tool();
+            toolText = new Tool();
 
             let myPath;
+            let pathEnd = new Shape.Circle(new Point(-5, -5), brushSize);
+            let text;
+            let textBox;
+            let cursorCircle = new Shape.Circle(new Point(-5, -5), brushSize);
+
+	        toolPan.onMouseDrag = function(event) {
+		        let pan_offset = event.point.subtract(event.downPoint);
+                let newCenter = paper.view.center.subtract(pan_offset);
+                if(newCenter.x + (paper.view.size._width / 2) > canvas.width){
+                    newCenter.x = canvas.width - (paper.view.size._width / 2);
+                }
+                else if(newCenter.x - (paper.view.size._width / 2) < 0){
+                    newCenter.x = paper.view.size._width / 2; 
+                }
+                if(newCenter.y + (paper.view.size._height / 2) > canvas.height){
+                    newCenter.y = canvas.height - (paper.view.size._height / 2);
+                }
+                else if(newCenter.y - (paper.view.size._height / 2) < 0){
+                    newCenter.y = paper.view.size._height / 2;
+                }
+
+		        paper.view.center = newCenter;
+	        }
 
             toolBrush.onMouseDown = function (event) {
+                cursorCircle.remove();
                 toolBrush.fixedDistance = brushSize;
+                let pathStart = new Shape.Circle(event.downPoint, brushSize)
+                pathStart.fillColor = brushColor;
+                pathStart.strokeColor = brushColor;
                 myPath = new Path();
                 myPath.fillColor = brushColor;
                 myPath.strokeColor = brushColor;
                 myPath.add(event.point);
             }
-
             toolBrush.onMouseDrag = function (event) {
                 let step = event.delta;
                 step.angle += 90;
@@ -49,6 +85,18 @@
 
                 myPath.add(top);
                 myPath.insert(0, bottom);
+                myPath.smooth();
+
+                pathEnd.remove();
+                pathEnd = new Shape.Circle(event.point, brushSize);
+                pathEnd.fillColor = brushColor;
+                pathEnd.strokeColor = brushColor;
+            }
+            toolBrush.onMouseMove = function(event){
+                cursorCircle.remove();
+                cursorCircle = new Shape.Circle(event.point, brushSize)
+                cursorCircle.strokeColor = '#808080';
+                cursorCircle.strokeWidth = 1;
             }
 
             toolEraser.onMouseDown = function (event) {
@@ -60,6 +108,11 @@
             }
 
             toolEraser.onMouseDrag = function (event) {
+                cursorCircle.remove();
+                cursorCircle = new Shape.Circle(event.point, eraserSize);
+                cursorCircle.strokeColor = 'gray';
+                cursorCircle.strokeWidth = 1;
+
                 let step = event.delta;
                 step.angle += 90;
 
@@ -73,11 +126,19 @@
 
                 myPath.add(top);
                 myPath.insert(0, bottom);
+                myPath.smooth();
+            }
+            toolEraser.onMouseMove = function (event) {
+                cursorCircle.remove();
+                cursorCircle = new Shape.Circle(event.point, eraserSize);
+                cursorCircle.strokeColor = 'gray';
+                cursorCircle.strokeWidth = 1;
             }
 
             toolLine.onMouseDown = function (event) {
                 myPath = new Path();
                 myPath.strokeColor = lineColor;
+                myPath.strokeWidth = lineSize;
                 myPath.add(event.point, event.point);
             }
 
@@ -85,6 +146,48 @@
                 myPath.lastSegment.point = event.point;
             }
 
+            toolText.onMouseDown = function (event) {
+                if (writingText) {
+                    writingText = false;
+                    textBox.remove();
+                }
+                else {
+                    writingText = true;
+                    text = new PointText(event.point);
+                    text.justification = 'center';
+                    text.fillColor = '@(Model.ColorPalette.TextColor)';
+                    text.content = '';
+                    text.fontFamily = textFont;
+                    text.fontSize = textSize;
+                    let textRect = new Rectangle(event.point.x - 40, event.point.y - 20, 80, 40);
+                    textBox = new Path.Rectangle(textRect);
+                    textBox.strokeColor = 'black';
+                    textBox.selected = true;
+                }
+            }
+
+            toolText.onKeyDown = function (event) {
+                if (event.key == 'shift')
+                    shifted = true;
+
+                else if (writingText) {
+                    if (event.key == 'enter')
+                        writingText = false;
+                    else if(event.key == 'backspace')
+                        text.content = text.content.slice(0, -1);
+                    else {
+                        if(shifted)
+                            text.content = text.content + event.key.replace('space', ' ').toUpperCase();
+                        else
+                            text.content = text.content + event.key.replace('space', ' ');
+                    }
+                }
+            }
+
+            toolText.onKeyUp = function(event){
+                if (event.key == 'shift')
+                    shifted = false;
+                }
         }
 
     </script>
@@ -155,6 +258,39 @@
         margin-top:auto;
         margin-bottom:auto;
     }
+
+    .slider-value{
+        width:10%;
+    }
+
+    .size-slider{
+        width:90%;
+        height:25px;
+        background:#d3d3d3;
+        outline:none;
+        opacity:0.7;
+        transition:opacity .2s;
+    }
+
+        .size-slider:hover{
+            opacity:1;
+        }
+
+        .size-slider::-webkit-slider-thumb{
+                width: 25px;
+                height: 25px;
+                border-radius:10px;
+                background: #000000;
+                cursor: pointer;
+        }
+
+        .size-slider:-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 10px;
+            background: #000000;
+            cursor: pointer;
+        }
 </style>
 
 <div class="row" style="margin-top:-15px;height:99%;">
@@ -171,6 +307,7 @@
                 <button class="btn btn-dark selected select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Select" onclick="toolSelect.activate();"><i class="fas fa-arrow-pointer"></i></button>
                 <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Multiselect"><i class="fas fa-grip"></i></button>
                 <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lasso"><i class="fas fa-circle"></i></button>
+                <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pan" onclick="toolPan.activate();"><i class="fas fa-arrows-alt"></i></button>
             </div>
             <div class="col-4"></div>
             <div class="col-1 d-flex">
@@ -195,7 +332,8 @@
                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Line" id="Line" onclick="toolLine.activate();">
                     <i class="fas fa-chart-line"></i>
                 </button>
-                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Fill">
+                <!--Paint bucket is difficult, because it typically uses flood fill rather than vector graphics-->
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Fill- Coming Soon" disabled>
                     <i class="fas fa-fill-drip"></i>
                 </button>
                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Erase" id="Erase" onclick="toolEraser.activate();">
@@ -203,14 +341,29 @@
                 </button>
                 <br />
                 <div class="d-none" id="brush-tools">
-                    <label class="form-label">Brush Size</label>
-                    <input class="form-control form-control-sm" id="brush-size" type="number" min="1" max="30" step="1" value="10" />
+                    <label class="form-label">Brush Size</label><br />
+                    <div class="d-inline-flex w-100">
+                        <span class="slider-value" id="brush-size-value">10</span>
+                        <input class="size-slider" id="brush-size" type="range" min="1" max="30" step="1" value="10" />
+                    </div>
                     <label class="form-label">Brush Color</label>
-                    <input type="color" id="brush-color" />
+                    <input type="color" id="brush-color" value="@Model.ColorPalette.LandColor"/>
+                </div>
+                <div class="d-none" id="line-tools">
+                    <label class="form-label">Line Size</label>
+                    <div class="d-inline-flex w-100">
+                        <span class="slider-value" id="line-size-value">10</span>
+                        <input class="size-slider" id="line-size" type="range" min="1" max="30" step="1" value="10" />
+                    </div>
+                    <label class="form-label">Line Color</label>
+                    <input type="color" id="line-color" value="@Model.ColorPalette.LandColor" />
                 </div>
                 <div class="d-none" id="eraser-tools">
                     <label class="form-label">Eraser Size</label>
-                    <input class="form-control form-control-sm" id="eraser-size" type="number" min="1" max="30" step="1" value="10" />
+                    <div class="d-inline-flex w-100">
+                        <span class="slider-value" id="eraser-size-value">10</span>
+                        <input class="size-slider" id="eraser-size" type="range" min="1" max="50" step="1" value="10" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -219,7 +372,7 @@
             <i class="float-end fas fa-chevron-down" style="width:40px;"></i>
         </div>
         <div class="collapse tools-collapsible ps-2" id="text-tools">
-            <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Text">
+            <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Text" onclick="toolText.activate();">
                 <i class="fas fa-font"></i>
             </button>
             <div class="input-group my-2 pe-2">
@@ -250,7 +403,7 @@
     </div>
     <!--Canvas-->
     <div class="col-7 canvas-panel overflow-auto">
-        <canvas id="mainCanvas" width="900" height="530" style="background-color:white;">
+        <canvas id="mainCanvas" width="900" height="530" style="background-color:@(Model.ColorPalette.CanvasColor);">
 
         </canvas>
     </div>
@@ -277,6 +430,7 @@
 </div>
 
 @section scripts{
+    <!--Tool selection-->
     <script>
         $('.select-button').on('click', function () {
             let selectButtons = document.getElementsByClassName('select-button');
@@ -285,17 +439,26 @@
             }
             $(this).addClass('selected');
 
+            //TODO: Refactor this code
             if(document.getElementById('Draw').classList.contains('selected')){
                 document.getElementById('brush-tools').classList.remove('d-none');
                 document.getElementById('eraser-tools').classList.add('d-none');
+                document.getElementById('line-tools').classList.add('d-none');
             }
             else if (document.getElementById('Erase').classList.contains('selected')) {
                 document.getElementById('brush-tools').classList.add('d-none');
                 document.getElementById('eraser-tools').classList.remove('d-none');
+                document.getElementById('line-tools').classList.add('d-none');
+            }
+            else if (document.getElementById('Line').classList.contains('selected')) {
+                document.getElementById('brush-tools').classList.add('d-none');
+                document.getElementById('eraser-tools').classList.add('d-none');
+                document.getElementById('line-tools').classList.remove('d-none');
             }
             else{
                 document.getElementById('brush-tools').classList.add('d-none');
-                document.getElementById('eraser-tools').classList.add('d-none');
+                document.getElementById('eraser-tools').classList.add('d-none'); 
+                document.getElementById('line-tools').classList.add('d-none');
             }
         });
         $('.mode-button').on('click', function () {
@@ -325,7 +488,7 @@
         //     this.classList.add('fa-chevron-down');
         // })
     </script>
-
+    <!--Change font on ui-->
     <script>
         $('#font-select').on('change', function () {
             $(this).css('font-family', $(this).val());
@@ -334,7 +497,7 @@
             $(this).css('font-size', $(this).val());
         });
     </script>
-
+    <!--Add New Layer-->
     <script>
         $(document).on('click', '#add-layer', function () {
             let layerSelects = document.getElementsByClassName('layer-button');
@@ -347,16 +510,87 @@
             $('.layer-button').last().after(newButton);
         });
     </script>
-
+    <!--Change drawing tool size and color-->
     <script>
-        $('#brush-size').on('change', function () {
-            brushSize = $(this).val();
+        $('#brush-size').on('input', function () {
+            brushSize = $(this).val() / 2;
+            $('#brush-size-value').html($(this).val());
         });
-        $('#brush-color').on('change', function () {
+        $('#brush-color').on('input', function () {
             brushColor = $(this).val();
         })
-        $('#eraser-size').on('change', function () {
-            eraserSize = $(this).val();
+        $('#eraser-size').on('input', function () {
+            eraserSize = $(this).val() / 2;
+            $('#eraser-size-value').html($(this).val());
         });
+        $('#line-size').on('input', function () {
+            lineSize = $(this).val();
+            $('#line-size-value').html($(this).val());
+        });
+        $('#line-color').on('input', function () {
+            lineColor = $(this).val();
+        })
+        $('#font-select').on('input', function () {
+            textFont = $(this).val();
+        })
+        $('#font-size-select').on('input', function () {
+            textSize = $(this).val();
+        })
+    </script>
+
+    <!--Script for Zoom & Pan-->
+    <script>
+        //Zoom
+        $(document).ready(function(){
+	        $('#mainCanvas').on('mousewheel', function(event) {
+                var canvas = this;
+		        var newZoom = paper.view.zoom; 
+		        var oldZoom = paper.view.zoom;
+                var minZoom = 1;
+		
+		        if (event.originalEvent.deltaY < 0) {			
+			        newZoom = paper.view.zoom * 1.05;
+		        } else{
+			        newZoom = paper.view.zoom * 0.95;
+		        }
+
+                if(newZoom < 1)
+                    newZoom = 1;
+                
+		
+		        var beta = oldZoom / newZoom;
+		
+		        var mousePosition = new paper.Point(event.offsetX, event.offsetY);
+		
+		        //viewToProject: gives the coordinates in the Project space from the Screen Coordinates
+		        var viewPosition = paper.view.viewToProject(mousePosition);
+		
+		        var mpos = viewPosition;
+		        var ctr = paper.view.center;
+		
+		        var pc = mpos.subtract(ctr);
+		        var offset = mpos.subtract(pc.multiply(beta)).subtract(ctr);	
+		
+		        paper.view.zoom = newZoom;
+		        paper.view.center = paper.view.center.add(offset);
+
+                if(paper.view.center.x + (paper.view.size._width / 2) > canvas.width){
+                    paper.view.center.x = canvas.width - (paper.view.size._width / 2);
+                }
+                else if(paper.view.center.x - (paper.view.size._width / 2) < 0){
+                    paper.view.center.x = paper.view.size._width / 2; 
+                }
+                if(paper.view.center.y + (paper.view.size._height / 2) > canvas.height){
+                    paper.view.center.y = canvas.height - (paper.view.size._height / 2);
+                }
+                else if(paper.view.center.y - (paper.view.size._height / 2) < 0){
+                    paper.view.center.y = paper.view.size._height / 2;
+                }
+		
+		        event.preventDefault();
+		        paper.view.draw();			
+	        });	
+        });	
+
     </script>
 }

@@ -55,21 +55,31 @@ i{
     text-align:center;
 }
 
-a{
-    cursor:pointer;
+map-select {
+    cursor: pointer;
 }
 
-a > .card:hover{
+.map-select:hover {
     background-color: #cccccc;
-    color:#f86a03;
-    border-color:transparent;
+    color: #f86a03;
+    border-color: transparent;
 }
 
-a > .card:hover > .card-footer {
+.map-select:hover > .card-footer {
     background-color: rgba(33, 37, 41, 0.8);
 }
 
 .btn-dark{
     border:solid 1px #808080;
     border-radius:1px;
+}
+
+.modal{
+    background-color:#212121;
+    color:#cccccc;
+}
+
+.modal-content {
+    background-color: #212121;
+    color: #cccccc;
 }
