@@ -10,11 +10,40 @@
 
 ## Downloading the Codebase
 
+Access the CartograCoders Capstone Project repository on Github, and select the green "<> Code" button:
+![Clone Using URL](https://imgur.com/a/JUKRgb7)
+
+From here, copy the highlighted link. Alternatively, you can select "Download ZIP" to download the contents directly instead of cloning.
+
+On Visual Studio 2022, select the File option in the top left. Then select the "Clone Repository..." option:
+![Visual Studio File](https://imgur.com/a/ykRCkYS)
+
+Paste the copied GitHub link into the "Repository Location" box. The "Path" box can be modified as desired, or left as default:
+![Clone a Repository](https://imgur.com/a/CiP00pl)
+
+Once completed, select the "Clone" option.
+
 ---
 ## Starting Up
 
+With the project loaded in Visual Studio, make sure the options along the top read "Debug," "Any CPU," and "IIS Express" respectively.
+![Debug Any CPU](https://imgur.com/a/Ledz4JA)
+
+The default browser may be set to Google Chrome. The project is not currently supported in Google Chrome, so select the IIS Express dropdown, scroll to the "Web Browsers" option, and select your preferred browser.
+![Web Browsers](https://imgur.com/a/YLSACrD)
+
+Now you may click the green triangle to the right of the "IIS Express" option to launch the project in the selected browser.
+
 ---
 ## Creating a New Map
+
+To begin creating a new map, select the "Create New Map" option under My Maps on the main menu:
+![Create New Map](https://imgur.com/a/rf0kOqA)
+
+From here,a box will open titled "Select a Theme." The themes will provide different colors on the map, and the selected theme will be highlighted in purple:
+![Select A Theme](https://imgur.com/a/jObXcNN)
+
+Once you have chosen a theme, click on the "Create Map" button to proceed.
 
 ---
 ## Editing Your Map
