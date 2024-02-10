@@ -16,6 +16,14 @@
 ---
 ## Creating a New Map
 
+To begin creating a new map, select the "Create New Map" option under My Maps on the main menu:
+![Create New Map](https://imgur.com/a/rf0kOqA)
+
+From here,a box will open titled "Select a Theme." The themes will provide different colors on the map, and the selected theme will be highlighted in purple:
+![Select A Theme](https://imgur.com/a/jObXcNN)
+
+Once you have chosen a theme, click on the "Create Map" button to proceed.
+
 ---
 ## Editing Your Map
 
