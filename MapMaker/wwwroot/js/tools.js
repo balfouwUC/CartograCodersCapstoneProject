@@ -1,7 +1,9 @@
 var writingText = false;
 var shifted = false;
+var landmasses = [[], [], [], [], [], [], [], [], [], []];
 
 paper.install(window);
+
 window.onload = function () {
     var canvas = document.getElementById('mainCanvas');
 
@@ -23,10 +25,6 @@ window.onload = function () {
     let text;
     let textBox;
     let cursorCircle = new Shape.Circle(new Point(-5, -5), brushSize);
-
-    let paths = [];
-    let landmasses = [];
-    let textObjects = [];
 
     toolPan.onMouseDrag = function (event) {
         let pan_offset = event.point.subtract(event.downPoint);
@@ -81,7 +79,7 @@ window.onload = function () {
     }
 
     toolBrush.onMouseUp = function (event) {
-        paths.push(myPath);
+        AddToLayers(myPath);
     }
 
     toolBrush.onMouseMove = function (event) {
@@ -189,12 +187,20 @@ window.onload = function () {
     toolLandmass.onMouseUp = function (event) {
         myPath.smooth();
         myPath.fillColor = brushColor;
-        landmasses.push(myPath);
+        AddToLayers(myPath);
     }
     toolLandmass.onMouseMove = function (event) {
         cursorCircle.remove();
         cursorCircle = new Shape.Circle(event.point, 3)
         cursorCircle.strokeColor = '#808080';
         cursorCircle.strokeWidth = 1;
+    }
+}
+
+function AddToLayers(path) {
+    let layerButtons = document.getElementsByClassName('layer-button');
+    for (let i = 0; i < layerButtons.length; i++) {
+        if (layerButtons[i].classList.contains('selected'))
+            landmasses[i].push(path);
     }
 }

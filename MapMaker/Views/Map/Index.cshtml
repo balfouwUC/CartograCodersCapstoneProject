@@ -299,12 +299,18 @@
             }
             $(this).addClass('selected');
         });
-        $(document).on('click', '.layer-button', function () {
+        $(document).on('click', '.layer-button', function (e) {
             let layerButtons = document.getElementsByClassName('layer-button');
-            for (let i = 0; i < layerButtons.length; i++) {
-                layerButtons[i].classList.remove('selected');
+
+            if(e.ctrlKey){
+                $(this).addClass('selected');
             }
-            $(this).addClass('selected');
+            else {
+                for (let i = 0; i < layerButtons.length; i++) {
+                    layerButtons[i].classList.remove('selected');
+                }
+                $(this).addClass('selected');
+            }
         });
 
     </script>
