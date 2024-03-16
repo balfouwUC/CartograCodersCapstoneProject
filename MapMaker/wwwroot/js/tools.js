@@ -1,6 +1,7 @@
 var writingText = false;
 var shifted = false;
 var landmasses = [[], [], [], [], [], [], [], [], [], []];
+var layers = [[0, 1000]];
 
 paper.install(window);
 
