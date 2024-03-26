@@ -138,8 +138,8 @@
             <div class="col-4"></div>
             <div class="col-1 d-flex">
                 <div class="btn-group float-end">
-                    <button class="btn btn-dark selected mode-button">Edit</button>
-                    <button class="btn btn-dark mode-button">View</button>
+                    <button class="btn btn-dark selected mode-button" id="editMode">Edit</button>
+                    <button class="btn btn-dark mode-button" id="viewMode">View</button>
                 </div>
             </div>
         </div>
@@ -309,6 +309,13 @@
                 modeButtons[i].classList.remove('selected');
             }
             $(this).addClass('selected');
+            if ($(this).attr('id') == 'editMode') {
+                ChangeLayer();
+            }
+            else {
+                let layer = GetLayerFromZoom(parseFloat($('#current-zoom').html()));
+                ZoomChangeLayer(layer);
+            }
         });
         $(document).on('click', '.layer-button', function (e) {
             let layerButtons = document.getElementsByClassName('layer-button');
@@ -323,7 +330,8 @@
                 $(this).addClass('selected');
             }
 
-            ChangeLayer();
+            if(document.getElementById('editMode').classList.contains('selected'))
+                ChangeLayer();
         });
 
     </script>
@@ -412,6 +420,11 @@
 
                 var displayZoom = Math.log10(newZoom) * 588.7 ;
                 $('#current-zoom').html(displayZoom.toFixed(0));
+
+                if (document.getElementById('viewMode').classList.contains('selected')) {
+                    let layer = GetLayerFromZoom(displayZoom);
+                    ZoomChangeLayer(layer);
+                }
 		
 		        var beta = oldZoom / newZoom;
 		

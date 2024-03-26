@@ -1,7 +1,7 @@
 var writingText = false;
 var shifted = false;
-var landmasses = [[], [], [], [], [], [], [], [], [], []];
-var layers = [[0, 1000]];
+var layerData = [[],[],[],[],[],[],[],[],[],[]];
+var layerSizes = [[99, 0], [199, 100], [299, 200], [399, 300], [499, 400], [599, 500], [699, 600], [799, 700], [899, 800], [1000, 900]];
 
 paper.install(window);
 
@@ -137,6 +137,7 @@ window.onload = function () {
 
     toolText.onMouseDown = function (event) {
         if (writingText) {
+            AddToLayers(text);
             writingText = false;
             textBox.remove();
         }
@@ -202,20 +203,39 @@ function AddToLayers(path) {
     let layerButtons = document.getElementsByClassName('layer-button');
     for (let i = 0; i < layerButtons.length; i++) {
         if (layerButtons[i].classList.contains('selected'))
-            landmasses[i].push(path);
+            layerData[i].push(path);
     }
 }
 
 function ChangeLayer() {
-    for (let i = 0; i < landmasses.length; i++) {
-        let currentLayer = landmasses[i];
-        if (document.getElementById('layer-' + (i + 1)).classList.contains('selected')){
-            for (let j = 0; j < currentLayer.length; j++)
-                currentLayer[j].opacity = 1;
-        }
-        else {
-            for (let j = 0; j < currentLayer.length; j++)
-                currentLayer[j].opacity = 0;
-        }
+    let selectedLayers = document.getElementsByClassName('layer-button selected')
+
+    for (let i = 0; i < layerData.length; i++)
+        for (let j = 0; j < layerData[i].length; j++)
+            layerData[i][j].opacity = 0;
+
+    for (let i = 0; i < selectedLayers.length; i++) {
+        let currentLayer = layerData[parseInt(selectedLayers[i].id.replace('layer-', '')) - 1];
+        for (let j = 0; j < currentLayer.length; j++)
+            currentLayer[j].opacity = 1;
     }
+}
+
+function ZoomChangeLayer(layerIdx) {
+    for (let i = 0; i < layerData.length; i++)
+        for (let j = 0; j < layerData[i].length; j++)
+            layerData[i][j].opacity = 0;
+
+    let currentLayer = layerData[layerIdx];
+    for (let j = 0; j < currentLayer.length; j++)
+        currentLayer[j].opacity = 1;
+}
+
+function GetLayerFromZoom(zoomLevel) {
+    for (let i = 0; i < layerSizes.length; i++) {
+        if (zoomLevel <= Math.max(...layerSizes[i]) && zoomLevel >= Math.min(...layerSizes[i]))
+            return i;
+    }
+
+    return 0;
 }
