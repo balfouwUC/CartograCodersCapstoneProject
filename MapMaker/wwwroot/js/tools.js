@@ -205,3 +205,17 @@ function AddToLayers(path) {
             landmasses[i].push(path);
     }
 }
+
+function ChangeLayer() {
+    for (let i = 0; i < landmasses.length; i++) {
+        let currentLayer = landmasses[i];
+        if (document.getElementById('layer-' + (i + 1)).classList.contains('selected')){
+            for (let j = 0; j < currentLayer.length; j++)
+                currentLayer[j].opacity = 1;
+        }
+        else {
+            for (let j = 0; j < currentLayer.length; j++)
+                currentLayer[j].opacity = 0;
+        }
+    }
+}
