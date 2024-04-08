@@ -171,6 +171,12 @@ window.onload = function () {
         thisCity.onClick = function (e) { HandleClickEvent(e, thisCity) };
         AddToLayers(thisCity);
     }
+    toolCity.onMouseMove = function (event) {
+        cursorCircle.remove();
+        cursorCircle = new Shape.Circle(event.point, citySize / 2);
+        cursorCircle.strokeColor = '#808080';
+        cursorCircle.strokeWidth = 1;
+    }
 
     toolText.onMouseDown = function (event) {
         if (writingText) {
