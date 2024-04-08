@@ -295,12 +295,16 @@
     <script type="text/javascript" src="~/js/download.js"></script>
     <!--Tool selection-->
     <script>
-        $('.select-button').on('click', function () {
+        $('.select-button').on('click', function (e) {
             let selectButtons = document.getElementsByClassName('select-button');
             for (let i = 0; i < selectButtons.length; i++) {
                 selectButtons[i].classList.remove('selected');
             }
             $(this).addClass('selected');
+
+            if($(this).attr('title') != 'Select'){
+                HandleClickEvent(e, null);
+            }
 
             //TODO: Refactor this code
             if (document.getElementById('Draw').classList.contains('selected')) {

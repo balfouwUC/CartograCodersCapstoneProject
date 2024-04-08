@@ -29,8 +29,12 @@ window.onload = function () {
     let textBox;
     let cursorCircle = new Shape.Circle(new Point(-5, -5), brushSize);
 
-    toolSelect.OnMouseDown = function (event) {
-        debugger;
+    toolSelect.onMouseDown = function (event) {
+        if (event.modifiers.shift) {
+            for (let i = 0; i < layerData.length; i++)
+                for (let j = 0; j < layerData[i].length; j++)
+                    layerData[i][j].selected = false;
+        }
     }
 
     toolSelect.onKeyDown = function (event) {
@@ -281,6 +285,9 @@ function HandleClickEvent(e, path) {
     for (let i = 0; i < layerData.length; i++)
         for (let j = 0; j < layerData[i].length; j++)
             layerData[i][j].selected = false;
-    path.selected = true;
-    selectedPath = path;
+
+    if (path != null && toolSelect.isActive()) {
+        path.selected = true;
+        selectedPath = path;
+    }
 }
