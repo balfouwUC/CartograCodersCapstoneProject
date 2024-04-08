@@ -1,7 +1,7 @@
 var writingText = false;
 var shifted = false;
 var layerData = [[],[],[],[],[],[],[],[],[],[]];
-var layerSizes = [[99, 0], [199, 100], [299, 200], [399, 300], [499, 400], [599, 500], [699, 600], [799, 700], [899, 800], [1000, 900]];
+var layerSizes = [[1000, 0], [], [], [], [], [], [], [], [], []];
 var selectedPath = null;
 
 paper.install(window);
@@ -285,6 +285,16 @@ function GetLayerFromZoom(zoomLevel) {
     }
 
     return 0;
+}
+
+function AddNewLayer(count) {
+    for (let i = 0; i < count; i++) {
+        let minZoom = Math.floor((1000 / count) * i);
+        let maxZoom = Math.floor(((1000 / count) * i) + (1000 / count) - 1);
+        if (i == count - 1)
+            maxZoom = 1000;
+        layerSizes[i] = [minZoom, maxZoom];
+    }
 }
 
 function HandleClickEvent(e, path) {

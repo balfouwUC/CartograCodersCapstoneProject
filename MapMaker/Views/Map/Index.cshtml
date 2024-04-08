@@ -289,11 +289,11 @@
             <span>Current Zoom: </span><span id="current-zoom">0</span>
             <div class="input-group my-2">
                 <div class="input-group-text">Min Zoom</div>
-                <input class="input-group-text" type="number" step="1" min="0" max="1000" value="0"></input>
+                <input id="minLayerZoom" class="input-group-text" type="number" step="1" min="0" max="1000" value="0" disabled ></input>
             </div>
             <div class="input-group my-2">
                 <div class="input-group-text">Max Zoom</div>
-                <input class="input-group-text" type="number" step="1" min="0" max="1000" value="1000"></input>
+                <input id="maxLayerZoom" class="input-group-text" type="number" step="1" min="0" max="1000" value="1000" disabled ></input>
             </div>
         </div>
     </div>
@@ -303,6 +303,30 @@
     <script type="text/javascript" src="~/lib/paper/dist/paper-full.js"></script>
     <script type="text/javascript" src="~/js/tools.js"></script>
     <script type="text/javascript" src="~/js/download.js"></script>
+
+    <script>
+        function FillZoomData() {
+            debugger;
+
+            let layerButtons = document.getElementsByClassName('layer-button');
+            let numLayers = layerButtons.length;
+            let selected = 0;
+            for (let i = 0; i < numLayers; i++) {
+                if (layerButtons[i].classList.contains('selected')) {
+                    selected = i;
+                    break;
+                }
+            }
+            let minZoom = Math.floor((1000 / numLayers) * selected);
+            let maxZoom = Math.floor(((1000 / numLayers) * selected) + (1000 / numLayers) - 1);
+            if (selected == numLayers - 1)
+                maxZoom = 1000;
+
+            $('#minLayerZoom').val(minZoom);
+            $('#maxLayerZoom').val(maxZoom);
+        }
+    </script>
+
     <!--Tool selection-->
     <script>
         $('.select-button').on('click', function (e) {
@@ -375,6 +399,8 @@
                 $(this).addClass('selected');
             }
 
+            FillZoomData();
+
             if(document.getElementById('editMode').classList.contains('selected'))
                 ChangeLayer();
         });
@@ -410,7 +436,9 @@
             }
             let nextIndex = layerSelects.length + 1;
             let newButton = '<button class="btn btn-dark layer-button" id="layer-' + nextIndex + '">' + nextIndex + '</button>';
+            AddNewLayer(nextIndex);
             $('.layer-button').last().after(newButton);
+            FillZoomData();
         });
     </script>
     <!--Change drawing tool size and color-->
