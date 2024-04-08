@@ -6,5 +6,7 @@
             ColorPalette = new ColorPaletteViewModel();
         }
         public ColorPaletteViewModel ColorPalette { get; set; }
+
+        public IEnumerable<Map>? Maps { get; set; }
     }
 }
