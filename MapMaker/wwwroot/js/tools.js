@@ -5,20 +5,6 @@ var layerSizes = [[99, 0], [199, 100], [299, 200], [399, 300], [499, 400], [599,
 
 paper.install(window);
 
-var downloadAsSVG = function (fileName) {
-
-    if (!fileName) {
-        fileName = "newMap.svg"
-    }
-
-    var url = "data:image/svg+xml;utf8," + encodeURIComponent(paper.project.exportSVG({ asString: true }));
-
-    var link = document.createElement("a");
-    link.download = fileName;
-    link.href = url;
-    link.click();
-}
-
 window.onload = function () {
     var canvas = document.getElementById('mainCanvas');
 
