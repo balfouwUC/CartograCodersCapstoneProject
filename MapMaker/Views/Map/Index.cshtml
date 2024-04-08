@@ -15,7 +15,11 @@
         var lineColor = '@(Model.ColorPalette.LandColor)';
         var textFont = "'Times New Roman', Times, serif";
         var textSize = 12;
-        var toolSelect, toolPan, toolBrush, toolEraser, toolLine, toolText;
+        var cityType = 'circle';
+        var citySize = 10;
+        var cityColor = '@(Model.ColorPalette.TextColor)';
+        var landmassColor = '@(Model.ColorPalette.LandColor)';
+        var toolSelect, toolPan, toolBrush, toolEraser, toolLine, toolText, toolCity;
     </script>
 </head>
 
@@ -131,9 +135,9 @@
             </div>
             <div class="btn-group ps-5 col-2">
                 <button class="btn btn-dark selected select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Select" onclick="toolSelect.activate();"><i class="fas fa-arrow-pointer"></i></button>
-                <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Multiselect"><i class="fas fa-grip"></i></button>
+                @* <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Multiselect"><i class="fas fa-grip"></i></button>
                 <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lasso"><i class="fas fa-circle"></i></button>
-                <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pan" onclick="toolPan.activate();"><i class="fas fa-arrows-alt"></i></button>
+                *@ <button class="btn btn-dark select-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pan" onclick="toolPan.activate();"><i class="fas fa-arrows-alt"></i></button>
             </div>
             <div class="col-4"></div>
             <div class="col-1 d-flex">
@@ -152,19 +156,22 @@
         </div>
         <div class="collapse tools-collapsible ps-2" id="drawing-tools">
             <div class="row">
-                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Draw" id="Draw" onclick="toolBrush.activate();">
-                    <i class="fas fa-paintbrush"></i>
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Road" id="Draw" onclick="toolBrush.activate();">
+                    <i class="fas fa-road"></i>
                 </button>
                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Line" id="Line" onclick="toolLine.activate();">
                     <i class="fas fa-chart-line"></i>
                 </button>
+                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="City" id="City" onclick="toolCity.activate();">
+                    <i class="fas fa-city"></i>
+                </button>
                 <!--Paint bucket is difficult, because it typically uses flood fill rather than vector graphics-->
-                <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Fill- Coming Soon" disabled>
+@*                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Fill- Coming Soon" disabled>
                     <i class="fas fa-fill-drip"></i>
                 </button>
                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Erase" id="Erase" onclick="toolEraser.activate();">
                     <i class="fas fa-eraser"></i>
-                </button>
+                </button> *@
                 <button class="btn btn-dark select-button file-button my-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Draw Landmass" id="Landmass" onclick="toolLandmass.activate();">
                     <i class="fas fa-splotch"></i>
                 </button>
@@ -187,16 +194,28 @@
                     <label class="form-label">Line Color</label>
                     <input type="color" id="line-color" value="@Model.ColorPalette.LandColor" />
                 </div>
-                <div class="d-none" id="eraser-tools">
+                <div class="d-none" id="city-tools">
+                    <label class="form-label">City Type</label><br />
+                    <select class="d-inline-flex w-100 mb-2" id="city-type">
+                        <option value="circle" selected>Circle</option>
+                    </select>
+                    <label class="form-label">City Color</label>
+                    <input type="color" id="city-color" value="@Model.ColorPalette.TextColor" />
+                </div>
+                <div class="d-none" id="landmass-tools">
+                    <label class="form-label">Landmass Color</label>
+                    <input type="color" id="landmass-color" value="@Model.ColorPalette.LandColor" />
+                </div>
+@*                <div class="d-none" id="eraser-tools">
                     <label class="form-label">Eraser Size</label>
                     <div class="d-inline-flex w-100">
                         <span class="slider-value" id="eraser-size-value">10</span>
                         <input class="size-slider" id="eraser-size" type="range" min="1" max="50" step="1" value="10" />
                     </div>
-                </div>
+                </div> *@
             </div>
         </div>
-        <div class="left-panel-header ps-2" data-bs-toggle="collapse" data-bs-target="#text-tools" aria-expanded="false" aria-controls="drawing-tools">
+        <div class="left-panel-header ps-2" data-bs-toggle="collapse" data-bs-target="#text-tools" aria-expanded="false" aria-controls="text-tools">
             Text
             <i class="float-end fas fa-chevron-down" style="width:40px;"></i>
         </div>
@@ -222,13 +241,13 @@
                 </select>
             </div>
         </div>
-        <div class="left-panel-header ps-2" data-bs-toggle="collapse" data-bs-target="#terrain-tools" aria-expanded="false" aria-controls="drawing-tools">
+@*         <div class="left-panel-header ps-2" data-bs-toggle="collapse" data-bs-target="#terrain-tools" aria-expanded="false" aria-controls="drawing-tools">
             Terrain
             <i class="float-end fas fa-chevron-down" style="width:40px;"></i>
         </div>
         <div class="collapse tools-collapsible ps-2" id="terrain-tools">
             Terraining Tools Coming Soon
-        </div>
+        </div> *@
     </div>
     <!--Canvas-->
     <div class="col-7 canvas-panel overflow-auto">
@@ -282,25 +301,35 @@
             $(this).addClass('selected');
 
             //TODO: Refactor this code
-            if(document.getElementById('Draw').classList.contains('selected')){
+            if (document.getElementById('Draw').classList.contains('selected')) {
                 document.getElementById('brush-tools').classList.remove('d-none');
-                document.getElementById('eraser-tools').classList.add('d-none');
                 document.getElementById('line-tools').classList.add('d-none');
-            }
-            else if (document.getElementById('Erase').classList.contains('selected')) {
-                document.getElementById('brush-tools').classList.add('d-none');
-                document.getElementById('eraser-tools').classList.remove('d-none');
-                document.getElementById('line-tools').classList.add('d-none');
+                document.getElementById('city-tools').classList.add('d-none');
+                document.getElementById('landmass-tools').classList.add('d-none');
             }
             else if (document.getElementById('Line').classList.contains('selected')) {
                 document.getElementById('brush-tools').classList.add('d-none');
-                document.getElementById('eraser-tools').classList.add('d-none');
                 document.getElementById('line-tools').classList.remove('d-none');
+                document.getElementById('city-tools').classList.add('d-none');
+                document.getElementById('landmass-tools').classList.add('d-none');
+            }
+            else if (document.getElementById('City').classList.contains('selected')) {
+                document.getElementById('brush-tools').classList.add('d-none');
+                document.getElementById('line-tools').classList.add('d-none');
+                document.getElementById('city-tools').classList.remove('d-none');
+                document.getElementById('landmass-tools').classList.add('d-none');
+            }
+            else if (document.getElementById('Landmass').classList.contains('selected')) {
+                document.getElementById('brush-tools').classList.add('d-none');
+                document.getElementById('line-tools').classList.add('d-none');
+                document.getElementById('city-tools').classList.add('d-none');
+                document.getElementById('landmass-tools').classList.remove('d-none');
             }
             else{
                 document.getElementById('brush-tools').classList.add('d-none');
-                document.getElementById('eraser-tools').classList.add('d-none'); 
                 document.getElementById('line-tools').classList.add('d-none');
+                document.getElementById('city-tools').classList.add('d-none');
+                document.getElementById('landmass-tools').classList.add('d-none');
             }
         });
         $('.mode-button').on('click', function () {
@@ -387,6 +416,15 @@
         });
         $('#line-color').on('input', function () {
             lineColor = $(this).val();
+        })
+        $('#city-type').on('input', function () {
+            cityType = $(this).val();
+        })
+        $('#city-color').on('input', function() {
+            cityColor = $(this).val();
+        })
+        $('#landmass-color').on('input', function () {
+            landmassColor = $(this).val();
         })
         $('#font-select').on('input', function () {
             textFont = $(this).val();

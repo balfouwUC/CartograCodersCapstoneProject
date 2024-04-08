@@ -2,6 +2,7 @@ var writingText = false;
 var shifted = false;
 var layerData = [[],[],[],[],[],[],[],[],[],[]];
 var layerSizes = [[99, 0], [199, 100], [299, 200], [399, 300], [499, 400], [599, 500], [699, 600], [799, 700], [899, 800], [1000, 900]];
+var selectedPath = null;
 
 paper.install(window);
 
@@ -20,12 +21,29 @@ window.onload = function () {
     toolLine = new Tool();
     toolText = new Tool();
     toolLandmass = new Tool();
+    toolCity = new Tool();
 
     let myPath;
     let pathEnd = new Shape.Circle(new Point(-5, -5), brushSize);
     let text;
     let textBox;
     let cursorCircle = new Shape.Circle(new Point(-5, -5), brushSize);
+
+    toolSelect.OnMouseDown = function (event) {
+        debugger;
+    }
+
+    toolSelect.onKeyDown = function (event) {
+        if (event.key == 'backspace') {
+            for (let i = 0; i < layerData.length; i++)
+                for (let j = 0; j < layerData[i].length; j++)
+                    if (layerData[i][j].selected) {
+                        layerData[i][j].remove();
+                        layerData[i].splice(j, 1);
+                    }
+                        
+        }
+    }
 
     toolPan.onMouseDrag = function (event) {
         let pan_offset = event.point.subtract(event.downPoint);
@@ -49,9 +67,6 @@ window.onload = function () {
     toolBrush.onMouseDown = function (event) {
         cursorCircle.remove();
         toolBrush.fixedDistance = brushSize;
-        let pathStart = new Shape.Circle(event.downPoint, brushSize)
-        pathStart.fillColor = brushColor;
-        pathStart.strokeColor = brushColor;
         myPath = new Path();
         myPath.fillColor = brushColor;
         myPath.strokeColor = brushColor;
@@ -64,23 +79,15 @@ window.onload = function () {
         let top = event.middlePoint.add(step);
         let bottom = event.middlePoint.subtract(step);
 
-        let line = new Path();
-        line.strokeColor = brushColor;
-        line.add(top);
-        line.add(bottom);
-
         myPath.add(top);
         myPath.insert(0, bottom);
         myPath.smooth();
-
-        pathEnd.remove();
-        pathEnd = new Shape.Circle(event.point, brushSize);
-        pathEnd.fillColor = brushColor;
-        pathEnd.strokeColor = brushColor;
     }
 
     toolBrush.onMouseUp = function (event) {
-        AddToLayers(myPath);
+        let thisPath = myPath;
+        thisPath.onClick = function (e) { HandleClickEvent(e, thisPath) };
+        AddToLayers(thisPath);
     }
 
     toolBrush.onMouseMove = function (event) {
@@ -134,10 +141,39 @@ window.onload = function () {
     toolLine.onMouseDrag = function (event) {
         myPath.lastSegment.point = event.point;
     }
+    toolLine.onMouseUp = function (event) {
+        let thisLine = myPath;
+        thisLine.onClick = function (e) { HandleClickEvent(e, thisLine) }
+        AddToLayers(thisLine);
+    }
+
+    toolCity.onMouseUp = function (event) {
+        if (cityType == 'circle') {
+            myPath = new Path.Circle({
+                center: event.point,
+                radius: citySize / 2
+            });
+        }
+        else {
+            myPath = new Path.Circle({
+                center: event.point,
+                radius: citySize / 2
+            });
+        }
+        myPath.strokeColor = cityColor;
+        myPath.fillColor = cityColor;
+
+        let thisCity = myPath;
+        thisCity.onClick = function (e) { HandleClickEvent(e, thisCity) };
+        AddToLayers(thisCity);
+    }
 
     toolText.onMouseDown = function (event) {
         if (writingText) {
-            AddToLayers(text);
+            let thisText = text;
+
+            thisText.onClick = function (e) { HandleClickEvent(e, thisText) }
+            AddToLayers(thisText);
             writingText = false;
             textBox.remove();
         }
@@ -160,9 +196,7 @@ window.onload = function () {
             shifted = true;
 
         else if (writingText) {
-            if (event.key == 'enter')
-                writingText = false;
-            else if (event.key == 'backspace')
+            if (event.key == 'backspace')
                 text.content = text.content.slice(0, -1);
             else {
                 if (shifted)
@@ -180,7 +214,7 @@ window.onload = function () {
     toolLandmass.onMouseDown = function (event) {
         cursorCircle.remove();
         myPath = new Path();
-        myPath.strokeColor = brushColor;
+        myPath.strokeColor = landmassColor;
         myPath.add(event.point);
     }
     toolLandmass.onMouseDrag = function (event) {
@@ -188,7 +222,10 @@ window.onload = function () {
     }
     toolLandmass.onMouseUp = function (event) {
         myPath.smooth();
-        myPath.fillColor = brushColor;
+        myPath.fillColor = landmassColor;
+
+        let thisPath = myPath;
+        thisPath.onClick = function (e) { HandleClickEvent(e, thisPath) };
         AddToLayers(myPath);
     }
     toolLandmass.onMouseMove = function (event) {
@@ -238,4 +275,12 @@ function GetLayerFromZoom(zoomLevel) {
     }
 
     return 0;
+}
+
+function HandleClickEvent(e, path) {
+    for (let i = 0; i < layerData.length; i++)
+        for (let j = 0; j < layerData[i].length; j++)
+            layerData[i][j].selected = false;
+    path.selected = true;
+    selectedPath = path;
 }
