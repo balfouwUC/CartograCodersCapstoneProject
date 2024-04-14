@@ -67,4 +67,20 @@ For finer details, select the arrows in the top panel to active the pan tool. Us
 ![Pan Tool](https://i.imgur.com/IOBPw3l.png)
 
 ---
+
+## Saving
+
+The "Save" button on the Edit page allows the user to save the currently displayed image to the database. Here is a quick look at the Maps table in the database before clicking "Save".\
+![](https://i.imgur.com/D2WYkr1.png)
+
+Then we can go to the application and click the "Save" button.\
+![](https://i.imgur.com/2kzB3OI.png)
+
+And now if we go back to the Maps table in the database, we can see a new entry has been added with the image data of the currently displayed image!\
+![](https://i.imgur.com/2sbsjuk.png)
+
+You can also see all of the data being returned by the Entity Framework Core database context while the application is running here:\
+![](https://i.imgur.com/o49eWiL.png)
+
+---
 ## FAQ
