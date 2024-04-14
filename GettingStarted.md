@@ -11,15 +11,15 @@
 ## Downloading the Codebase
 
 Access the CartograCoders Capstone Project repository on Github, and select the green "<> Code" button:
-![Clone Using URL](https://imgur.com/a/JUKRgb7)
+![Clone Using URL](https://i.imgur.com/EEo1MSL.png)
 
 From here, copy the highlighted link. Alternatively, you can select "Download ZIP" to download the contents directly instead of cloning.
 
 On Visual Studio 2022, select the File option in the top left. Then select the "Clone Repository..." option:
-![Visual Studio File](https://imgur.com/a/ykRCkYS)
+![Visual Studio File](https://i.imgur.com/nLkUmTl.png)
 
 Paste the copied GitHub link into the "Repository Location" box. The "Path" box can be modified as desired, or left as default:
-![Clone a Repository](https://imgur.com/a/CiP00pl)
+![Clone a Repository](https://i.imgur.com/DHsJkLb.png)
 
 Once completed, select the "Clone" option.
 
@@ -27,10 +27,10 @@ Once completed, select the "Clone" option.
 ## Starting Up
 
 With the project loaded in Visual Studio, make sure the options along the top read "Debug," "Any CPU," and "IIS Express" respectively.
-![Debug Any CPU](https://imgur.com/a/Ledz4JA)
+![Debug Any CPU](https://i.imgur.com/Vn5TT16.png)
 
 The default browser may be set to Google Chrome. The project is not currently supported in Google Chrome, so select the IIS Express dropdown, scroll to the "Web Browsers" option, and select your preferred browser.
-![Web Browsers](https://imgur.com/a/YLSACrD)
+![Web Browsers](https://i.imgur.com/HrpdOM3.png)
 
 Now you may click the green triangle to the right of the "IIS Express" option to launch the project in the selected browser.
 
@@ -38,10 +38,10 @@ Now you may click the green triangle to the right of the "IIS Express" option to
 ## Creating a New Map
 
 To begin creating a new map, select the "Create New Map" option under My Maps on the main menu:
-![Create New Map](https://imgur.com/a/rf0kOqA)
+![Create New Map](https://i.imgur.com/rkBCwSV.png)
 
 From here,a box will open titled "Select a Theme." The themes will provide different colors on the map, and the selected theme will be highlighted in purple:
-![Select A Theme](https://imgur.com/a/jObXcNN)
+![Select A Theme](https://i.imgur.com/nWJKdy0.png)
 
 Once you have chosen a theme, click on the "Create Map" button to proceed.
 
